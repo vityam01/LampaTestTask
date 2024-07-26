@@ -8,10 +8,17 @@
 import Foundation
 import Combine
 
-class MovieAPI {
+protocol MovieServiceProtocol {
+    func fetchMovies(endpoint: String) -> AnyPublisher<[MovieAPIModel], Error>
+}
+
+
+class MovieAPI: MovieServiceProtocol {
     static let shared = MovieAPI()
     private let apiKey = AppURLs.apiKey
     private let baseURL = AppURLs.apiBaseURL
+    
+    private init() {}
     
     func fetchMovies(endpoint: String) -> AnyPublisher<[MovieAPIModel], Error> {
         guard let url = URL(string: "\(baseURL)\(endpoint)?api_key=\(apiKey)") else {

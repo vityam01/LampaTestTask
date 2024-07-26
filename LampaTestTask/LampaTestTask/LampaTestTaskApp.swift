@@ -26,13 +26,13 @@ struct LampaTestTaskApp: App {
         navigationBar.scrollEdgeAppearance = appearance
         navigationBar.standardAppearance = appearance
         navigationBar.compactAppearance = appearance
-        navigationBar.barTintColor = nil // Ensure there's no default color
+        navigationBar.barTintColor = nil 
     }
     
     var body: some Scene {
         WindowGroup {
             TabView {
-                HomeView()
+                HomeView(viewModel: HomeViewModel(movieService: MovieAPI.shared))
                     .tabItem {
                         Label(AppText.home, systemImage: AppImages.house)
                     }

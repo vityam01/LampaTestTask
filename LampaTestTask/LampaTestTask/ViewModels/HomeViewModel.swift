@@ -14,14 +14,15 @@ import RealmSwift
 class HomeViewModel: ObservableObject {
     @Published var popularMovies: [MovieViewModel] = []
     private var cancellables = Set<AnyCancellable>()
+    private let movieService: MovieServiceProtocol
     
-    init() {
+    init(movieService: MovieServiceProtocol) {
+        self.movieService = movieService
         fetchPopularMovies()
     }
     
     func fetchPopularMovies() {
-        MovieAPI.shared.fetchMovies(endpoint: AppURLs.popularMoviePath)
-            .map { $0.map { MovieMapper.apiModelToViewModel($0) } }
+        movieService.fetchMovies(endpoint: AppURLs.popularMoviePath)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let error):
@@ -30,7 +31,7 @@ class HomeViewModel: ObservableObject {
                     break
                 }
             }, receiveValue: { [weak self] movies in
-                self?.popularMovies = movies
+                self?.popularMovies = movies.map { MovieMapper.apiModelToViewModel($0) }
             })
             .store(in: &cancellables)
     }
